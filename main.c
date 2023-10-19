@@ -1,48 +1,84 @@
 #include "monty.h"
+stack_t *head = NULL;
+
+/**
+ * main - entry point
+ * @argc: arguments count
+ * @argv: list of arguments
+ * Return: always 0
+ */
+
+int main(int argc, char *argv[])
+{
+	if (argc != 2)
+	{
+	fprintf(stderr, "USAGE: monty file\n");
+	exit(EXIT_FAILURE);
+	}
+	open_file(argv[1]);
+	free_nodes();
+	return (0);
+}
+
+/**
+ * create_node - Creates a node.
+ * @n: Number to go inside the node.
+ * Return: Upon sucess a pointer to the node. Otherwise NULL.
+ */
+stack_t *create_node(int n)
+{
+	stack_t *node;
+
+	node = malloc(sizeof(stack_t));
+	if (node == NULL)
+	err(4);
+	node->next = NULL;
+	node->prev = NULL;
+	node->n = n;
+	return (node);
+}
+
+/**
+ * free_nodes - Frees nodes in the stack.
+ */
+void free_nodes(void)
+{
+	stack_t *tmp;
+
+	if (head == NULL)
+	return;
+
+	while (head != NULL)
+	{
+	tmp = head;
+	head = head->next;
+	free(tmp);
+	}
+}
 
 
 /**
- * main - Start LIFO, FILO program
- * @ac: Number of arguments
- * @av: Pointer containing arguments
- * Return: 0 Success, 1 Failed
+ * add_to_queue - Adds a node to the queue.
+ * @new_node: Pointer to the new node.
+ * @ln: line number of the opcode.
  */
-int main(int ac, char **av)
+void add_to_queue(stack_t **new_node, __attribute__((unused))unsigned int ln)
 {
-	char *opcode;
-	vars var;
+	stack_t *tmp;
 
-	if (ac != 2)
+	if (new_node == NULL || *new_node == NULL)
+	exit(EXIT_FAILURE);
+	if (head == NULL)
 	{
-	fprintf(stderr, "USAGE: monty file\n");
-	return (EXIT_FAILURE);
+	head = *new_node;
+	return;
 	}
+	tmp = head;
+	while (tmp->next != NULL)
+	tmp = tmp->next;
 
-	if (start_vars(&var) != 0)
-	return (EXIT_FAILURE);
+	tmp->next = *new_node;
+	(*new_node)->prev = tmp;
 
-	var.file = fopen(av[1], "r");
-	if (!var.file)
-	{
-	fprintf(stderr, "Error: Can't open file %s\n", av[1]);
-	free_all();
-	return (EXIT_FAILURE);
-	}
-
-	while (getline(&var.buff, &var.tmp, var.file) != EOF)
-	{
-	opcode = strtok(var.buff, " \r\t\n");
-	if (opcode != NULL)
-	if (call_funct(&var, opcode) == EXIT_FAILURE)
-	{
-	free_all();
-	return (EXIT_FAILURE);
-	}
-	var.line_number++;
-	}
-
-	free_all();
-
-	return (EXIT_SUCCESS);
 }
 
