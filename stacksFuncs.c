@@ -114,7 +114,7 @@ void pop(stack_t **stack, unsigned int line_number)
 	stack_t *tmp = *stack;
 
 	if (*stack == NULL)
-	pop_error(line_number);
+	popError(line_number);
 
 	*stack = (*stack)->prev;
 
@@ -136,7 +136,7 @@ void swap(stack_t **stack, unsigned int line_number)
 	int i;
 
 	if (*stack == NULL || (*stack)->prev == NULL)
-		swap_error(line_number);
+	swapError(line_number);
 
 	i = (*stack)->n;
 	(*stack)->n = (*stack)->prev->n;
@@ -202,7 +202,7 @@ void mul(stack_t **stack, unsigned int line_number)
  * @line_number: constant int value in the structure
  * Return: void
  **/
-void div(stack_t **stack, unsigned int line_number)
+void  _div(stack_t **stack, unsigned int line_number)
 {
 	stack_t *tmp = *stack;
 
